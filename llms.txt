@@ -1,6 +1,6 @@
-# Fast Pass Driving
+# Pass Faster UK
 
-> Official site for Fast Pass Driving.
+> Official website for Pass Faster UK, a learner-driver support platform.
 
-- Website: https://example.com/
-- Contact: hello@example.com
+- Website: https://passfasteruk.co.uk/
+- Contact: hello@passfasteruk.co.uk

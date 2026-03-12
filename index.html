@@ -17,7 +17,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_GB" />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="canonical" href="https://example.com/" />
+    <link rel="canonical" href="https://passfasteruk.co.uk/" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,8 +25,7 @@
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
-    <link rel="stylesheet" href="styles.css?v=20260311f" />
+    <link rel="stylesheet" href="styles.css?v=20260312b" />
 
     <script type="application/ld+json">
       {
@@ -40,17 +39,21 @@
         },
         "areaServed": "United Kingdom",
         "telephone": "+44 20 0000 0000",
-        "email": "hello@passfasteruk.co.uk"
+        "email": "jpoynton25@gmail.com"
       }
     </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
 
-    <div class="announcement-bar">
-      <p>Free 7-day revision plan + learner support roadmap for new enquiries this week</p>
-      <a href="#free-resources">Get Free Access</a>
-    </div>
+    <aside class="announcement-bar" aria-label="Weekly learner offer">
+      <div class="container announcement-bar__inner">
+        <p class="announcement-bar__text">
+          Free 7-day revision plan + learner support PDF for new enquiries this week
+        </p>
+        <a class="announcement-bar__cta" href="free-resources.html#resource-plan">Get Free Access</a>
+      </div>
+    </aside>
 
     <header class="site-header">
       <div class="container nav-wrap">
@@ -62,18 +65,34 @@
           </span>
         </a>
 
-        <nav class="nav-links" aria-label="Primary">
-          <a href="#free-resources">Free Resources</a>
-          <a href="#pass-pack">Pass Pack</a>
-          <a href="#practical-support">Practical Support</a>
-          <a href="#lessons">Lessons</a>
-          <a href="#intensive">Intensive</a>
-          <a href="#faq">FAQ</a>
-        </nav>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primary-menu"
+          aria-label="Open navigation menu"
+        >
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+        </button>
 
-        <div class="nav-actions">
-          <a class="btn btn-secondary" href="tel:+442000000000">Call Now</a>
-          <a class="btn btn-primary" href="#contact">Get Started</a>
+        <div class="nav-panel" id="primary-menu">
+          <nav class="nav-links" aria-label="Primary">
+            <a href="#routes">Routes</a>
+            <a href="#free-resources">Free Resources</a>
+            <a href="#pass-pack">Pass Pack</a>
+            <a href="#practical-support">Practical Support</a>
+            <a href="#lessons">Lessons</a>
+            <a href="#intensive">Intensive</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Contact</a>
+          </nav>
+
+          <div class="nav-actions">
+            <a class="btn btn-secondary" href="tel:+442000000000">Call Now</a>
+            <a class="btn btn-primary" href="contact.html">Get Started</a>
+          </div>
         </div>
       </div>
     </header>
@@ -81,27 +100,28 @@
     <main id="main">
       <section id="top" class="section hero" data-reveal>
         <div class="container hero-grid">
-          <div class="hero-copy" data-aos="fade-right">
+          <div class="hero-copy">
             <p class="eyebrow">Theory + practical success, faster</p>
             <h1>Pass Your Theory and Practical Driving Test Faster</h1>
             <p class="hero-text">
-              Stop revising random topics and avoid wasting test fees. Use mock tests, hazard support,
-              practical guidance, and Pass Pack tools so you know exactly what to focus on next.
+              Stop revising random topics and avoid wasting test fees. Use mock tests, hazard
+              perception support, practical test guidance, Pass Pack offers, and optional lesson or
+              intensive routes so you know exactly what to focus on next.
             </p>
 
             <div class="hero-actions">
-              <a class="btn btn-primary btn-large" href="#free-resources">Start Free Mock Test</a>
-              <a class="btn btn-secondary btn-large" href="#pass-pack">See Pass Pack Options</a>
+              <a class="btn btn-primary btn-large" href="mock-theory-test.html">Start Free Mock Test</a>
+              <a class="btn btn-secondary btn-large" href="free-resources.html#resource-plan">Get Free Access</a>
             </div>
 
             <ul class="hero-trust" aria-label="Proof points">
               <li><strong>All-in-one</strong><span>Theory + practical support</span></li>
-              <li><strong>Start free</strong><span>Build confidence before paying</span></li>
-              <li><strong>Clear next steps</strong><span>Know what to focus on now</span></li>
+              <li><strong>Multiple paths</strong><span>Free, product, lessons, intensive</span></li>
+              <li><strong>Clear next steps</strong><span>Built for real pass progress</span></li>
             </ul>
           </div>
 
-          <aside class="hero-card" aria-label="Featured product and outcomes" data-aos="zoom-in-left">
+          <aside class="hero-card" aria-label="Featured product and outcomes">
             <div class="hero-image-wrap">
               <img
                 class="main-driver-img"
@@ -113,11 +133,11 @@
               <div class="floating-card practical-card">✅ Practical prep</div>
             </div>
             <article class="product-card mockup-card">
-              <span class="pill">Most popular support offer</span>
-              <h2>Pass First Time Pack</h2>
+              <span class="pill">Featured Free Resource</span>
+              <h2>Free 7-Day Revision Plan + Learner Support PDF</h2>
               <p>
-                A premium digital toolkit to help you revise smarter, improve hazard confidence, and
-                avoid common practical fail mistakes before test day.
+                Start with the free learner-driver PDF to stop random revision and get clear next
+                steps before choosing paid support.
               </p>
               <ul>
                 <li>7-day revision sprint</li>
@@ -127,10 +147,10 @@
               </ul>
               <div class="price-row">
                 <div>
-                  <small>One-time payment</small>
-                  <strong>£9.99</strong>
+                  <small>Completely free</small>
+                  <strong>£0</strong>
                 </div>
-                <a class="btn btn-primary" href="#pass-pack">Get Pass Pack</a>
+                <a class="btn btn-primary" href="free-resources.html#resource-plan">Get Free Access</a>
               </div>
             </article>
           </aside>
@@ -140,61 +160,79 @@
       <section id="routes" class="section route-section" data-reveal>
         <div class="container">
           <header class="section-heading center">
-            <span class="eyebrow">Choose your route</span>
+            <span class="eyebrow">Choose Your Route</span>
             <h2>What do you need help with right now?</h2>
           </header>
 
           <div class="bento-grid">
-            <article class="bento-card theory-main" data-aos="fade-up">
+            <article class="bento-card theory-main">
               <div class="card-content">
                 <span class="badge-new">MOST POPULAR</span>
                 <div class="icon-wrap blue-glow" aria-hidden="true">📖</div>
                 <h3>Pass My Theory</h3>
-                <p>Master high-yield topics with our 7-day sprint and mock-test readiness framework.</p>
+                <p>Focus on high-yield revision topics and mock-test readiness.</p>
                 <a href="theory-test.html" class="arrow-link">Start theory support</a>
               </div>
             </article>
 
-            <article class="bento-card hazard-card" data-aos="fade-up" data-aos-delay="100">
+            <article class="bento-card hazard-card">
               <div class="icon-wrap orange-glow" aria-hidden="true">⚠️</div>
-              <h3>Hazard Perception</h3>
-              <p>Fix low-scoring habits and master timing cues.</p>
-              <a href="hazard-perception.html" class="arrow-link">Get help</a>
+              <h3>Practice Hazard Perception</h3>
+              <p>Improve timing confidence and avoid low-scoring clip habits.</p>
+              <a href="hazard-perception.html" class="arrow-link">Get hazard help</a>
             </article>
 
-            <article class="bento-card practical-main" data-aos="fade-up" data-aos-delay="200">
+            <article class="bento-card practical-main">
               <div class="icon-wrap green-glow" aria-hidden="true">🚗</div>
               <h3>Pass My Practical</h3>
               <p>Fix fail points and prep with a clear pre-test plan.</p>
-              <a href="practical-test.html" class="arrow-link">Prepare for test</a>
+              <a href="practical-test.html" class="arrow-link">See practical support</a>
             </article>
 
-            <article class="bento-card mini-card lessons" data-aos="fade-up" data-aos-delay="300">
-              <h3>Driving Lessons</h3>
-              <a href="driving-lessons.html" class="arrow-link">Explore</a>
+            <article class="bento-card mini-card lessons">
+              <div class="icon-wrap teal-glow" aria-hidden="true">🧑‍🏫</div>
+              <h3>Find Driving Lessons</h3>
+              <p>Book manual or automatic sessions matched to your experience level.</p>
+              <a href="driving-lessons.html" class="arrow-link">Explore lesson options</a>
             </article>
 
-            <article class="bento-card mini-card intensive" data-aos="fade-up" data-aos-delay="400">
-              <h3>Intensives</h3>
-              <a href="intensive-courses.html" class="arrow-link">Compare</a>
+            <article class="bento-card mini-card intensive">
+              <div class="icon-wrap sky-glow" aria-hidden="true">⏱️</div>
+              <h3>Compare Intensive Courses</h3>
+              <p>Find the fastest realistic route for your target test timeline.</p>
+              <a href="intensive-courses.html" class="arrow-link">Compare intensives</a>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="section section-compact" data-reveal>
-        <div class="container trust-items">
-          <article><strong>Focused support</strong><span>Theory, hazard, practical and next steps</span></article>
-          <article><strong>Start free</strong><span>Build confidence before choosing paid support</span></article>
-          <article><strong>Test-day calm</strong><span>Preparation that reduces panic and errors</span></article>
-          <article><strong>Flexible routes</strong><span>Use products, lessons, or intensive help</span></article>
+      <section class="section section-compact trust-strip" data-reveal aria-label="Trust and benefits">
+        <div class="container">
+          <ul class="trust-items">
+            <li class="trust-item">
+              <span class="trust-item__icon" aria-hidden="true">🎯</span>
+              <div><strong>Focused support</strong><span>Theory, hazard, practical and next steps</span></div>
+            </li>
+            <li class="trust-item">
+              <span class="trust-item__icon" aria-hidden="true">🆓</span>
+              <div><strong>Start free</strong><span>Build confidence before choosing paid support</span></div>
+            </li>
+            <li class="trust-item">
+              <span class="trust-item__icon" aria-hidden="true">🛡️</span>
+              <div><strong>Test-day calm</strong><span>Preparation that reduces panic and errors</span></div>
+            </li>
+            <li class="trust-item">
+              <span class="trust-item__icon" aria-hidden="true">🧭</span>
+              <div><strong>Flexible routes</strong><span>Use products, lessons, or intensive help</span></div>
+            </li>
+          </ul>
         </div>
       </section>
 
       <section id="free-resources" class="section" data-reveal>
         <div class="container">
           <header class="section-heading center">
-            <span class="eyebrow">Free resources</span>
+            <span class="eyebrow">Free Resources</span>
             <h2>High-value resources to build momentum before you buy</h2>
             <p>Use these free tools to accelerate progress and identify your best next step.</p>
           </header>
@@ -202,47 +240,54 @@
           <div class="card-grid four-up">
             <article class="info-card resource-card">
               <div class="icon" aria-hidden="true">📅</div>
-              <h3>Free 7-Day Revision Plan</h3>
+              <h3>Free 7-Day Revision Plan + Learner Support PDF</h3>
               <p>Daily theory structure so you stop revising random topics.</p>
-              <a href="free-resources.html">Get free plan</a>
+              <a class="resource-card__cta" href="free-resources.html#resource-plan">Get Free Access</a>
             </article>
             <article class="info-card resource-card">
               <div class="icon" aria-hidden="true">📝</div>
               <h3>Free Mock Theory Test</h3>
               <p>Benchmark your score and reveal weak topics quickly.</p>
-              <a href="free-resources.html">Start free mock</a>
+              <a class="resource-card__cta" href="mock-theory-test.html">Start free mock</a>
             </article>
             <article class="info-card resource-card">
               <div class="icon" aria-hidden="true">🎯</div>
               <h3>Free Hazard Guide</h3>
               <p>Learn timing cues and avoid common hazard scoring mistakes.</p>
-              <a href="free-resources.html">Get hazard guide</a>
+              <a class="resource-card__cta" href="hazard-perception.html#free-guide">Get hazard guide</a>
             </article>
             <article class="info-card resource-card">
               <div class="icon" aria-hidden="true">📋</div>
               <h3>Practical Test Checklist</h3>
               <p>Know exactly what to review before your practical test day.</p>
-              <a href="free-resources.html">Download checklist</a>
+              <a class="resource-card__cta" href="practical-test.html#free-practical-pack">Download checklist</a>
             </article>
           </div>
+          <p class="resource-section-action">
+            <a class="btn btn-secondary" href="free-resources.html#resource-plan">Get Free Access</a>
+          </p>
         </div>
       </section>
 
-      <section class="section section-compact benefits-lite-wrap" data-reveal>
+      <section class="section section-compact benefits-lite-wrap support-ladder" data-reveal aria-label="Support ladder">
         <div class="container benefits-lite">
           <article class="benefit-item">
+            <span class="benefit-item__marker" aria-hidden="true">🧩</span>
             <h3>Free resources to get started</h3>
             <p>Begin with mock tests and checklists before you spend.</p>
           </article>
           <article class="benefit-item">
+            <span class="benefit-item__marker" aria-hidden="true">🗂️</span>
             <h3>Pass Pack support for structure</h3>
             <p>Know exactly what to focus on next each week.</p>
           </article>
           <article class="benefit-item">
+            <span class="benefit-item__marker" aria-hidden="true">✅</span>
             <h3>Practical guidance for confidence</h3>
             <p>Feel calmer before test day with focused preparation.</p>
           </article>
           <article class="benefit-item">
+            <span class="benefit-item__marker" aria-hidden="true">🛣️</span>
             <h3>Lessons or intensives if needed</h3>
             <p>Add extra support matched to your timeline and level.</p>
           </article>
@@ -252,11 +297,10 @@
       <section id="pass-pack" class="section section-alt" data-reveal>
         <div class="container">
           <header class="section-heading center">
-            <span class="eyebrow">Pass Pack offers</span>
-            <h2>Outcome-driven support for faster pass confidence</h2>
+            <span class="eyebrow">More Structured Support</span>
+            <h2>Optional upgrades after your free support plan</h2>
             <p>
-              Designed for learners who want to stop revising the wrong things and feel test-ready
-              sooner.
+              Start free first. Use these structured options later if you want deeper guidance.
             </p>
             <p class="passpack-reassure">
               Start with the core pack or choose Pro if your test date is close.
@@ -274,7 +318,7 @@
                 <li>Improve hazard confidence</li>
                 <li>Avoid common practical fail mistakes</li>
               </ul>
-              <a class="btn btn-secondary" href="pass-pack.html">Buy Pass First Time Pack</a>
+              <a class="btn btn-secondary" href="pass-pack.html">View Starter Pack</a>
             </article>
 
             <article class="price-card featured-price">
@@ -288,7 +332,7 @@
                 <li>Last-week confidence booster</li>
                 <li>Pro practical prep sheets</li>
               </ul>
-              <a class="btn btn-primary" href="pass-pack.html">Get Instant Access</a>
+              <a class="btn btn-primary" href="pass-pack.html">View Pro Pack</a>
             </article>
           </div>
         </div>
@@ -297,7 +341,7 @@
       <section id="practical-support" class="section" data-reveal>
         <div class="container">
           <header class="section-heading center">
-            <span class="eyebrow">Practical test support</span>
+            <span class="eyebrow">Practical Test Support</span>
             <h2>Get practical-ready with focused test-day guidance</h2>
             <p>
               Use focused practical support to reduce avoidable mistakes and feel calmer before test
@@ -310,19 +354,19 @@
               <div class="icon" aria-hidden="true">⚙</div>
               <h3>Common Driving Test Fails</h3>
               <p>Fix the faults that cause the most practical test failures.</p>
-              <a href="#contact">See fail-point guide</a>
+              <a href="practical-test.html#common-fails">See fail-point guide</a>
             </article>
             <article class="info-card">
               <div class="icon" aria-hidden="true">❓</div>
               <h3>Show Me Tell Me Help</h3>
               <p>Prepare the key vehicle safety questions with clear prompts.</p>
-              <a href="#contact">Get question prep</a>
+              <a href="practical-test.html">Get question prep</a>
             </article>
             <article class="info-card">
               <div class="icon" aria-hidden="true">✅</div>
               <h3>What To Do Before Test Day</h3>
               <p>Use a pre-test routine that reduces panic and improves performance.</p>
-              <a href="#contact">Get test-day plan</a>
+              <a href="practical-test.html#free-practical-pack">Get test-day plan</a>
             </article>
           </div>
         </div>
@@ -332,7 +376,7 @@
         <div class="container split-section">
           <div class="lessons-copy">
             <header class="section-heading left">
-              <span class="eyebrow">Driving lessons</span>
+              <span class="eyebrow">Driving Lessons</span>
               <h2>Manual and automatic lessons matched to your current level</h2>
             </header>
             <p>
@@ -367,8 +411,8 @@
       <section id="intensive" class="section" data-reveal>
         <div class="container split-section reverse">
           <aside class="panel highlight-panel">
-            <span class="pill">Fast-track options</span>
-            <h3>Compare intensive course options</h3>
+            <span class="pill">Fast-Track Options</span>
+            <p class="panel-title">Compare intensive course options</p>
             <p>
               For learners with urgent timelines, compare course formats and get recommendations based
               on your current ability.
@@ -382,7 +426,7 @@
           </aside>
           <div>
             <header class="section-heading left">
-              <span class="eyebrow">Intensive courses</span>
+              <span class="eyebrow">Intensive Courses</span>
               <h2>Request the fastest realistic route to test readiness</h2>
             </header>
             <p>
@@ -397,7 +441,7 @@
       <section class="section dark-band" data-reveal>
         <div class="container dark-band-grid">
           <div>
-            <span class="eyebrow light">How Pass Faster UK helps you</span>
+            <span class="eyebrow light">How Pass Faster UK Helps You</span>
             <h2>A clear route from first visit to test-ready confidence.</h2>
           </div>
           <div class="dark-cards">
@@ -421,7 +465,7 @@
         <div class="container form-section">
           <div>
             <header class="section-heading left">
-              <span class="eyebrow">Get support</span>
+              <span class="eyebrow">Get Support</span>
               <h2>Tell us your stage and we will recommend your best next step</h2>
             </header>
             <p>
@@ -435,7 +479,7 @@
             </ul>
           </div>
 
-          <form class="lead-form" action="https://formspree.io/f/your-id-here" method="POST">
+          <form class="lead-form" action="https://formsubmit.co/jpoynton25@gmail.com" method="POST" data-next="/thank-you-contact.html" data-subject="Homepage support request">
             <div class="form-row">
               <label>
                 Full name
@@ -494,7 +538,7 @@
               </label>
             </div>
 
-            <button class="btn btn-primary btn-large btn-submit" type="submit">Get My Best Next Step</button>
+            <button class="btn btn-primary btn-large btn-submit" type="submit">Get My Plan</button>
           </form>
         </div>
       </section>
@@ -559,12 +603,13 @@
             <li><a href="pass-pack.html">Pass Pack</a></li>
             <li><a href="practical-test.html">Practical support</a></li>
             <li><a href="intensive-courses.html">Intensive options</a></li>
+            <li><a href="contact.html">Contact</a></li>
           </ul>
         </div>
         <div>
           <h3>Contact</h3>
           <ul>
-            <li><a href="mailto:hello@passfasteruk.co.uk">hello@passfasteruk.co.uk</a></li>
+            <li><a href="mailto:jpoynton25@gmail.com">jpoynton25@gmail.com</a></li>
             <li><a href="tel:+442000000000">+44 20 0000 0000</a></li>
             <li>Mon-Fri: 9:00-18:00</li>
             <li>United Kingdom</li>
@@ -576,37 +621,12 @@
           </div>
         </div>
       </div>
+      <div class="container footer-meta">
+        <p>&copy; <span id="year"></span> Pass Faster UK. All rights reserved.</p>
+      </div>
     </footer>
 
-    <div id="pack-promo-modal" class="promo-modal" role="dialog" aria-modal="true" aria-labelledby="promo-title" aria-hidden="true">
-      <div class="promo-modal-card">
-        <button id="promo-close" class="promo-close" type="button" aria-label="Close offer">×</button>
-        <p class="promo-kicker">PASS FIRST TIME PACK</p>
-        <h3 id="promo-title">Stop revising random topics. Start a clear 7-day pass plan.</h3>
-        <p>Get instant access to theory priorities, hazard guidance, and practical fail-point prep for £9.99.</p>
-        <div class="promo-actions">
-          <a class="btn btn-primary" href="pass-pack.html">Get Instant Access</a>
-          <button id="promo-later" class="btn btn-ghost" type="button">Maybe later</button>
-        </div>
-      </div>
-    </div>
-
-    <aside id="pack-nudge" class="pack-nudge" aria-live="polite">
-      <button id="pack-nudge-close" class="pack-nudge-close" type="button" aria-label="Dismiss pass pack prompt">×</button>
-      <p><strong>Pass First Time Pack</strong><br />One payment, instant access, clear next steps.</p>
-      <a class="btn btn-secondary" href="pass-pack.html">Buy for £9.99</a>
-    </aside>
-
-    <div id="sales-notification" class="sales-popup" aria-live="polite" aria-atomic="true">
-      <div id="sales-icon" class="sales-icon" aria-hidden="true">🚀</div>
-      <div class="sales-content">
-        <p id="sales-text">A learner just started the free mock theory test.</p>
-        <span id="sales-time">Just now</span>
-      </div>
-      <button id="sales-close" class="sales-close" type="button" aria-label="Dismiss notification">×</button>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="site-config.js"></script>
     <script src="main.js" defer></script>
   </body>
 </html>
