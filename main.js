@@ -25,21 +25,11 @@ const initAnalytics = () => {
 
 const initContactValues = () => {
   const email = String(PFUK_CONFIG.contactEmail || '').trim();
-  const phone = String(PFUK_CONFIG.contactPhone || '').trim();
-  const phoneDisplay = String(PFUK_CONFIG.contactPhoneDisplay || phone).trim();
 
   if (email) {
     document.querySelectorAll('a[href^="mailto:"]').forEach((anchor) => {
       anchor.setAttribute('href', `mailto:${email}`);
       if (!anchor.dataset.keepText) anchor.textContent = email;
-    });
-  }
-
-  if (phone) {
-    document.querySelectorAll('a[href^="tel:"]').forEach((anchor) => {
-      anchor.setAttribute('href', `tel:${phone}`);
-      const isCallNow = /call now/i.test(anchor.textContent || '');
-      if (!isCallNow && !anchor.dataset.keepText) anchor.textContent = phoneDisplay;
     });
   }
 };
@@ -116,6 +106,37 @@ const initReveal = () => {
   revealElements.forEach((el) => observer.observe(el));
 };
 
+const initGlobalTrustProof = () => {
+  const main = document.querySelector('main');
+  if (!main) return;
+  if (main.querySelector('[data-global-trust-proof]')) return;
+
+  const trustSection = document.createElement('section');
+  trustSection.className = 'section section-compact global-trust-proof';
+  trustSection.setAttribute('data-reveal', '');
+  trustSection.setAttribute('data-global-trust-proof', 'true');
+  trustSection.innerHTML = `
+    <div class="container">
+      <div class="trust-proof-bar" aria-label="Trust proof">
+        <p class="trust-proof-title">Trusted learner-driver support</p>
+        <ul class="trust-proof-list">
+          <li>Real inbox support via <a href="mailto:infopassfasteruk@gmail.com">infopassfasteruk@gmail.com</a></li>
+          <li>Free mock test and free learner-support PDF available now</li>
+          <li>No fake paid checkout flows - packs clearly marked coming soon</li>
+          <li>Independent UK learner-driver guidance (not the official DVSA site)</li>
+        </ul>
+      </div>
+    </div>
+  `;
+
+  const firstSection = main.querySelector('section');
+  if (firstSection?.nextSibling) {
+    firstSection.parentNode.insertBefore(trustSection, firstSection.nextSibling);
+  } else {
+    main.appendChild(trustSection);
+  }
+};
+
 const initAccordion = () => {
   document.querySelectorAll('[data-accordion]').forEach((accordion) => {
     const items = [...accordion.querySelectorAll('details')];
@@ -163,6 +184,32 @@ const initCheckoutPrefill = () => {
   if (match) packSelect.value = pack;
 };
 
+const initContactPrefill = () => {
+  if (!/\/?contact\.html$/i.test(window.location.pathname)) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const helpWith = String(params.get('help_with') || '').trim();
+  const next = String(params.get('next') || '').trim();
+
+  const contactForm = document.querySelector('form.lead-form[data-subject*="Get My Plan"]');
+  if (!contactForm) return;
+
+  if (helpWith) {
+    const helpSelect = contactForm.querySelector('select[name="help_with"]');
+    if (helpSelect) {
+      const decoded = decodeURIComponent(helpWith.replace(/\+/g, ' '));
+      const match = [...helpSelect.options].find((opt) => opt.value === decoded || opt.text === decoded);
+      if (match) helpSelect.value = match.value;
+    }
+  }
+
+  const normalizedNext = next.replace(/^\//, '');
+  if (normalizedNext === 'thank-you-waitlist.html') {
+    contactForm.dataset.next = '/thank-you-waitlist.html';
+    contactForm.dataset.subject = 'Get My Plan request';
+  }
+};
+
 const initCheckoutLinks = () => {
   const checkoutLinks = PFUK_CONFIG.checkoutLinks || {};
   const starter = String(checkoutLinks.starter || '').trim();
@@ -194,10 +241,20 @@ const initForms = () => {
       : configuredSiteUrl;
   const siteUrl = isLocalRuntime ? runtimeOrigin : configuredSiteUrl;
   const publicSiteUrl = configuredSiteUrl || siteUrl;
+  const leadFormEndpoint = String(PFUK_CONFIG.leadFormEndpoint || '').trim();
   const formEndpoint = String(PFUK_CONFIG.formEndpoint || '').trim();
+  const disableCaptchaByDefault = PFUK_CONFIG.formDisableCaptcha === true;
 
   document.querySelectorAll('form').forEach((form) => {
-    if (formEndpoint && !form.hasAttribute('data-fixed-action')) {
+    // Keep quiz-only forms out of lead form submission flow.
+    if (form.id === 'mock-theory-form') return;
+
+    const isLeadForm = form.classList.contains('lead-form');
+    const isGasLeadForm = isLeadForm && Boolean(leadFormEndpoint);
+
+    if (isGasLeadForm && leadFormEndpoint) {
+      form.setAttribute('action', leadFormEndpoint);
+    } else if (formEndpoint && !form.hasAttribute('data-fixed-action')) {
       form.setAttribute('action', formEndpoint);
     }
 
@@ -209,7 +266,7 @@ const initForms = () => {
       const name = String(field.getAttribute('name') || '').toLowerCase();
       if (name.includes('name')) field.setAttribute('autocomplete', 'name');
       if (name === 'email') field.setAttribute('autocomplete', 'email');
-      if (name.includes('phone')) {
+      if (name.includes('phone') || name.includes('mobile')) {
         field.setAttribute('autocomplete', 'tel');
         field.setAttribute('inputmode', 'tel');
       }
@@ -244,27 +301,74 @@ const initForms = () => {
       form.appendChild(input);
     };
 
+    const addHoneypot = () => {
+      if (form.querySelector('input[name="_honey"]')) return;
+      const trap = document.createElement('input');
+      trap.type = 'text';
+      trap.name = '_honey';
+      trap.tabIndex = -1;
+      trap.autocomplete = 'off';
+      trap.setAttribute('aria-hidden', 'true');
+      trap.style.position = 'absolute';
+      trap.style.left = '-9999px';
+      trap.style.opacity = '0';
+      trap.style.pointerEvents = 'none';
+      form.appendChild(trap);
+    };
+
     const nextPath = form.dataset.next || '/thank-you.html';
     const subject = form.dataset.subject || `${document.title} enquiry`;
     const sourcePage = form.dataset.sourcePage || window.location.pathname.replace(/^\//, '') || 'index.html';
     const resourceType = form.dataset.resourceType || '';
 
+    const pathStem = window.location.pathname
+      .replace(/^\/+|\/+$/g, '')
+      .replace(/\.html$/i, '')
+      .replace(/[^a-z0-9]+/gi, '_')
+      .replace(/^_+|_+$/g, '')
+      .toLowerCase();
+    const inferredSourcePage = form.dataset.sourcePage || pathStem || 'index';
+
+    const inferFormType = () => {
+      if (nextPath === '/thank-you-free-pdf.html') return 'free_pdf';
+      if (nextPath === '/thank-you-waitlist.html') return 'waitlist_request';
+      return 'support_request';
+    };
+
+    const inferredFormType = form.dataset.formType || inferFormType();
+    const inferredIntentStage =
+      form.dataset.intentStage ||
+      (inferredFormType === 'free_pdf'
+        ? 'top_of_funnel'
+        : inferredFormType === 'waitlist_request'
+          ? 'mid_funnel_waitlist'
+          : 'qualified_lead');
+    const inferredResourceType =
+      form.dataset.resourceType ||
+      (inferredFormType === 'free_pdf'
+        ? 'revision_plan_pdf'
+        : inferredFormType === 'waitlist_request'
+          ? 'waitlist'
+          : 'none');
+
     if (isFormSubmit) {
       const nextPath = form.dataset.next || '/thank-you.html';
       const subject = form.dataset.subject || `${document.title} enquiry`;
-      // Keep FormSubmit reCAPTCHA enabled by default.
-      // Their autoresponse feature does not work when reCAPTCHA is disabled.
-      if (form.dataset.disableCaptcha === 'true') {
+      const sourceUrl = `${publicSiteUrl}/${sourcePage}`.replace(/([^:]\/)\/+/g, '$1');
+      addHoneypot();
+      // Disable FormSubmit CAPTCHA to ensure reliable delivery flow.
+      if (disableCaptchaByDefault || form.dataset.disableCaptcha === 'true') {
         addHidden('_captcha', 'false');
       }
       addHidden('_template', 'table');
       addHidden('_subject', subject);
+      addHidden('_url', sourceUrl);
       // For localhost testing, redirect back to local pages. For production, use configured domain.
       addHidden('_next', `${siteUrl}${nextPath}`);
 
       // Resource forms send a clear autoresponse with the direct download link.
       if (nextPath === '/thank-you-resources.html') {
-        const downloadLink = `${publicSiteUrl}/assets/downloads/free-revision-plan.pdf`;
+        const downloadLink = `${publicSiteUrl}/assets/downloads/freebookletpdf.pdf`;
         const autoResponseLines = [
           'Your free Pass Faster UK resource is ready.',
           '',
@@ -279,11 +383,32 @@ const initForms = () => {
       }
     }
 
-    addHidden('source_page', sourcePage);
+    addHidden('source_page', inferredSourcePage);
     addHidden('next_page', nextPath.replace(/^\//, ''));
-    addHidden('resource_type', resourceType);
+    addHidden('resource_type', inferredResourceType);
+    if (isGasLeadForm) {
+      addHidden('form_type', inferredFormType);
+      addHidden('intent_stage', inferredIntentStage);
+      addHoneypot();
+    }
+    if (isGasLeadForm) {
+      addHidden('next_url', `${siteUrl}${nextPath}`);
+    }
 
     form.addEventListener('submit', (event) => {
+      if (isFormSubmit) {
+        const emailField = form.querySelector('input[name="email"]');
+        const emailValue = String(emailField?.value || '').trim();
+        let replyTo = form.querySelector('input[name="_replyto"]');
+        if (!replyTo) {
+          replyTo = document.createElement('input');
+          replyTo.type = 'hidden';
+          replyTo.name = '_replyto';
+          form.appendChild(replyTo);
+        }
+        replyTo.value = emailValue;
+      }
+
       if (window.location.protocol === 'file:') {
         event.preventDefault();
         if (feedback) {
@@ -300,6 +425,15 @@ const initForms = () => {
         return;
       }
 
+      if (isGasLeadForm && !leadFormEndpoint) {
+        event.preventDefault();
+        if (feedback) {
+          feedback.textContent =
+            'Lead form setup is incomplete. Add PFUK_CONFIG.leadFormEndpoint in site-config.js.';
+        }
+        return;
+      }
+
       const submitButton = form.querySelector('button[type="submit"]');
       if (submitButton) {
         submitButton.disabled = true;
@@ -312,6 +446,27 @@ const initForms = () => {
         form_id: form.id || form.getAttribute('name') || 'lead-form',
         page_title: document.title
       });
+
+      // For cross-origin Google Apps Script posts, show fallback message if navigation does not occur.
+      if (isGasLeadForm) {
+        let didNavigateAway = false;
+        window.addEventListener(
+          'pagehide',
+          () => {
+            didNavigateAway = true;
+          },
+          { once: true }
+        );
+        window.setTimeout(() => {
+          if (didNavigateAway) return;
+          if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.classList.remove('is-submitting');
+          }
+          form.setAttribute('aria-busy', 'false');
+          if (feedback) feedback.textContent = 'Something went wrong. Please try again in a moment.';
+        }, 12000);
+      }
     });
   });
 };
@@ -378,8 +533,12 @@ const initMockTheoryQuiz = () => {
   mockTheoryForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    if (!mockTheoryForm.checkValidity()) {
-      mockTheoryForm.reportValidity();
+    const hasAllAnswers = questions.every(({ name }) => {
+      const selected = mockTheoryForm.querySelector(`input[name="${name}"]:checked`);
+      return Boolean(selected);
+    });
+
+    if (!hasAllAnswers) {
       if (validationEl) validationEl.textContent = 'Please answer all 10 questions before submitting.';
       return;
     }
@@ -467,15 +626,202 @@ const initMockTheoryQuiz = () => {
   });
 };
 
+const initFreeGuidePopup = () => {
+  const path = window.location.pathname.toLowerCase();
+  const skipPages = ['thank-you', 'order-confirmed'];
+  if (skipPages.some((slug) => path.includes(slug))) return;
+
+  const dismissedKey = 'pfuk_free_guide_popup_dismissed_at';
+  const openedKey = 'pfuk_free_guide_popup_opened_in_session';
+  const now = Date.now();
+  const dismissedAt = Number(window.localStorage.getItem(dismissedKey) || 0);
+  const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+
+  if (dismissedAt && now - dismissedAt < sevenDaysMs) return;
+  if (window.sessionStorage.getItem(openedKey) === 'true') return;
+
+  const popup = document.createElement('div');
+  popup.className = 'lead-popup';
+  popup.setAttribute('aria-hidden', 'true');
+  popup.innerHTML = `
+    <div class="lead-popup__overlay" data-popup-close></div>
+    <section class="lead-popup__card" role="dialog" aria-modal="true" aria-labelledby="free-guide-popup-title">
+      <button class="lead-popup__close" type="button" aria-label="Close popup" data-popup-close>&times;</button>
+      <p class="eyebrow">Free learner support</p>
+      <h2 id="free-guide-popup-title">Get the Free 7-Day Revision Plan + Learner Support PDF</h2>
+      <p>Start with the free guide today. No paid pack required.</p>
+      <ul class="tick-list compact">
+        <li>Instant access request</li>
+        <li>Covers theory + practical next steps</li>
+        <li>Helps reduce random revision</li>
+      </ul>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="free-resources.html#resource-plan" data-popup-cta>Get Free Download</a>
+        <button class="btn btn-secondary" type="button" data-popup-close>Not now</button>
+      </div>
+    </section>
+  `;
+
+  const closePopup = (persist = false) => {
+    popup.classList.remove('is-open');
+    popup.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('lead-popup-open');
+    if (persist) window.localStorage.setItem(dismissedKey, String(Date.now()));
+  };
+
+  const openPopup = () => {
+    if (popup.classList.contains('is-open')) return;
+    popup.classList.add('is-open');
+    popup.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('lead-popup-open');
+    window.sessionStorage.setItem(openedKey, 'true');
+    trackEvent('free_guide_popup_shown', { page_title: document.title });
+  };
+
+  popup.querySelectorAll('[data-popup-close]').forEach((btn) => {
+    btn.addEventListener('click', () => closePopup(true));
+  });
+
+  popup.querySelector('[data-popup-cta]')?.addEventListener('click', () => {
+    trackEvent('free_guide_popup_cta_click', { page_title: document.title });
+    closePopup(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closePopup(true);
+  });
+
+  document.body.appendChild(popup);
+
+  let didScheduleOpen = false;
+  const maybeOpen = () => {
+    if (didScheduleOpen) return;
+    didScheduleOpen = true;
+    openPopup();
+  };
+
+  const timerId = window.setTimeout(maybeOpen, 14000);
+
+  const onScroll = () => {
+    const scrolled = window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    if (scrolled > 0.45) {
+      window.removeEventListener('scroll', onScroll);
+      window.clearTimeout(timerId);
+      maybeOpen();
+    }
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const onMouseLeave = (event) => {
+    if (event.clientY > 10) return;
+    document.removeEventListener('mouseout', onMouseLeave);
+    window.clearTimeout(timerId);
+    maybeOpen();
+  };
+  document.addEventListener('mouseout', onMouseLeave);
+};
+
+const initDownloadProofToast = () => {
+  const path = window.location.pathname.toLowerCase();
+  const skipPages = ['thank-you', 'order-confirmed'];
+  if (skipPages.some((slug) => path.includes(slug))) return;
+  const now = Date.now();
+
+  const firstNames = ['Amir', 'Sarah', 'Liam', 'Zara', 'Noah', 'Aisha', 'Ethan', 'Mia', 'Jacob', 'Ella'];
+  const locations = [
+    'Manchester',
+    'Birmingham',
+    'Leeds',
+    'Liverpool',
+    'Bristol',
+    'London',
+    'Glasgow',
+    'Sheffield',
+    'Leicester',
+    'Nottingham'
+  ];
+  const actions = [
+    'requested the free PDF',
+    'is checking out the free PDF',
+    'just opened the free guide page',
+    'downloaded the learner-support PDF'
+  ];
+
+  const daySeed = Math.floor(now / (24 * 60 * 60 * 1000));
+  let index = daySeed % firstNames.length;
+  const toast = document.createElement('aside');
+  toast.className = 'download-proof-toast';
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
+  toast.innerHTML = `
+    <button class="download-proof-toast__close" type="button" aria-label="Close" data-toast-close>&times;</button>
+    <p class="download-proof-toast__kicker">Recent learner activity</p>
+    <p class="download-proof-toast__text" data-toast-text></p>
+    <a class="download-proof-toast__link" href="free-resources.html#resource-plan">Get free download</a>
+  `;
+  const toastText = toast.querySelector('[data-toast-text]');
+
+  const setNextMessage = () => {
+    const person = firstNames[index % firstNames.length];
+    const location = locations[(index * 3 + 2) % locations.length];
+    const action = actions[(index * 5 + 1) % actions.length];
+    if (toastText) toastText.innerHTML = `<strong>${person}</strong> in <strong>${location}</strong> ${action}.`;
+    index += 1;
+  };
+
+  let pausedUntil = 0;
+
+  const closeToast = (snoozeMs = 60000) => {
+    pausedUntil = Date.now() + snoozeMs;
+    toast.classList.remove('is-visible');
+  };
+
+  toast.querySelector('[data-toast-close]')?.addEventListener('click', closeToast);
+
+  toast.querySelector('.download-proof-toast__link')?.addEventListener('click', () => {
+    trackEvent('download_proof_toast_click', { page_title: document.title });
+    closeToast();
+  });
+
+  document.body.appendChild(toast);
+  setNextMessage();
+
+  const showFor = 4200;
+  const hideFor = 3800;
+
+  const cycle = () => {
+    if (!document.body.contains(toast)) return;
+    const waitMs = Math.max(0, pausedUntil - Date.now());
+    if (waitMs > 0) {
+      window.setTimeout(cycle, waitMs);
+      return;
+    }
+    toast.classList.add('is-visible');
+    window.setTimeout(() => {
+      toast.classList.remove('is-visible');
+      window.setTimeout(() => {
+        setNextMessage();
+        cycle();
+      }, hideFor);
+    }, showFor);
+  };
+
+  window.setTimeout(cycle, 1800);
+};
+
 initAnalytics();
 initContactValues();
 initHeader();
+initGlobalTrustProof();
 initReveal();
 initAccordion();
 initYear();
 initCheckoutPrefill();
+initContactPrefill();
 initCheckoutLinks();
 initForms();
 initCtaTracking();
 initPdfDownloadTracking();
 initMockTheoryQuiz();
+initFreeGuidePopup();
+initDownloadProofToast();

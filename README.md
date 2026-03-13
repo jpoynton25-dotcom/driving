@@ -34,7 +34,6 @@ Production-ready static multi-page website for the Pass Faster UK learner-driver
 Edit `site-config.js`:
 - `siteUrl`
 - `contactEmail`
-- `contactPhone`
 - `formEndpoint`
 - `ga4Id`
 

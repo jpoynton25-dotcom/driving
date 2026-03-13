@@ -6,8 +6,7 @@
 - Confirm `robots.txt` and `sitemap.xml` are publicly reachable.
 
 ## 2) Contact Details
-- Update phone number where currently shown as `+44 20 0000 0000`.
-- Keep email as `hello@passfasteruk.co.uk` or replace with your live inbox.
+- Keep email as `infopassfasteruk@gmail.com` or replace with your live inbox.
 
 ## 3) Forms (already wired)
 - Current provider: FormSubmit (`formsubmit.co`).

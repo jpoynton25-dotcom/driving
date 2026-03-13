@@ -1,9 +1,10 @@
 window.PFUK_CONFIG = {
   siteUrl: 'https://passfasteruk.co.uk',
-  contactEmail: 'jpoynton25@gmail.com',
-  contactPhone: '+442000000000',
-  contactPhoneDisplay: '+44 20 0000 0000',
-  formEndpoint: 'https://formsubmit.co/jpoynton25@gmail.com',
+  contactEmail: 'infopassfasteruk@gmail.com',
+  // Paste your deployed Google Apps Script Web App URL here.
+  leadFormEndpoint: 'https://script.google.com/macros/s/AKfycby0bJFeyyl_JGhncQm-nn3lBYR6RYdSbSEQmWw0-D99WJgzv6pg3AThCYoQedu7tOTx/exec',
+  formEndpoint: 'https://formsubmit.co/infopassfasteruk@gmail.com',
+  formDisableCaptcha: true,
   ga4Id: '',
   checkoutLinks: {
     starter: '',
