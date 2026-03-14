@@ -316,6 +316,31 @@ const initForms = () => {
       form.appendChild(trap);
     };
 
+    const resolveHelpWithValue = () => {
+      const direct = form.querySelector('[name="help_with"]');
+      if (direct) return String(direct.value || '').trim();
+
+      const fallbackNames = [
+        'interest',
+        'lesson_type',
+        'challenge',
+        'focus',
+        'theory_passed',
+        'experience_level',
+        'target_timescale',
+        'pack'
+      ];
+
+      const values = fallbackNames
+        .map((fieldName) => {
+          const field = form.querySelector(`[name="${fieldName}"]`);
+          return field ? String(field.value || '').trim() : '';
+        })
+        .filter(Boolean);
+
+      return values.join(' | ');
+    };
+
     const nextPath = form.dataset.next || '/thank-you.html';
     const subject = form.dataset.subject || `${document.title} enquiry`;
     const sourcePage = form.dataset.sourcePage || window.location.pathname.replace(/^\//, '') || 'index.html';
@@ -396,6 +421,18 @@ const initForms = () => {
     }
 
     form.addEventListener('submit', (event) => {
+      if (isGasLeadForm) {
+        const resolvedHelpWith = resolveHelpWithValue();
+        let helpWithInput = form.querySelector('input[type="hidden"][name="help_with"]');
+        if (!helpWithInput) {
+          helpWithInput = document.createElement('input');
+          helpWithInput.type = 'hidden';
+          helpWithInput.name = 'help_with';
+          form.appendChild(helpWithInput);
+        }
+        helpWithInput.value = resolvedHelpWith;
+      }
+
       if (isFormSubmit) {
         const emailField = form.querySelector('input[name="email"]');
         const emailValue = String(emailField?.value || '').trim();
