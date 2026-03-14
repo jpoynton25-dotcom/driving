@@ -316,6 +316,17 @@ const initForms = () => {
       form.appendChild(trap);
     };
 
+    const setHiddenValue = (name, value) => {
+      let input = form.querySelector(`input[type="hidden"][name="${name}"]`);
+      if (!input) {
+        input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        form.appendChild(input);
+      }
+      input.value = value;
+    };
+
     const resolveHelpWithValue = () => {
       const direct = form.querySelector('[name="help_with"]');
       if (direct) return String(direct.value || '').trim();
@@ -423,14 +434,20 @@ const initForms = () => {
     form.addEventListener('submit', (event) => {
       if (isGasLeadForm) {
         const resolvedHelpWith = resolveHelpWithValue();
-        let helpWithInput = form.querySelector('input[type="hidden"][name="help_with"]');
-        if (!helpWithInput) {
-          helpWithInput = document.createElement('input');
-          helpWithInput.type = 'hidden';
-          helpWithInput.name = 'help_with';
-          form.appendChild(helpWithInput);
+        setHiddenValue('help_with', resolvedHelpWith);
+
+        // Backward compatibility for older Apps Script versions that still
+        // require postcode/transmission on support_request forms.
+        const currentFormType =
+          form.querySelector('input[name="form_type"]')?.value || form.dataset.formType || inferredFormType;
+        if (currentFormType === 'support_request') {
+          const postcodeField = form.querySelector('[name="postcode"]');
+          const transmissionField = form.querySelector('[name="transmission"]');
+          const postcodeValue = String(postcodeField?.value || '').trim();
+          const transmissionValue = String(transmissionField?.value || '').trim();
+          if (!postcodeValue) setHiddenValue('postcode', 'N/A');
+          if (!transmissionValue) setHiddenValue('transmission', 'Not specified');
         }
-        helpWithInput.value = resolvedHelpWith;
       }
 
       if (isFormSubmit) {
