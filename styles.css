@@ -2172,6 +2172,11 @@ main li a:not(.btn):not(.arrow-link):not(.resource-card__cta):focus-visible {
     flex-direction: column;
   }
 
+  .hero-image-wrap {
+    width: min(100%, 360px);
+    margin-inline: auto;
+  }
+
   .panel-feature-image {
     display: block;
     width: min(100%, 360px);
