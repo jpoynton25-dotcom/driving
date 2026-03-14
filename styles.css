@@ -1308,10 +1308,54 @@ section[id] {
   font-weight: 700;
 }
 
+.form-legal-note {
+  margin: 0 0 0.8rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.form-legal-note a {
+  color: #1d4ed8;
+  font-weight: 700;
+}
+
+.trust-explainer {
+  margin-top: 1rem;
+  padding: 0.95rem 1rem;
+  border-radius: 14px;
+  border: 1px solid #c8d8f2;
+  background: #f7fbff;
+}
+
+.trust-explainer h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.98rem;
+}
+
+.trust-explainer .tick-list {
+  margin: 0;
+}
+
 .helper-note {
   margin: 0.9rem 0 0;
   color: var(--muted);
   font-size: 0.92rem;
+}
+
+.prose {
+  max-width: 78ch;
+}
+
+.prose h2 {
+  margin: 1.2rem 0 0.45rem;
+  font-family: "Sora", "Plus Jakarta Sans", sans-serif;
+  font-size: 1.2rem;
+}
+
+.prose p {
+  margin: 0 0 0.85rem;
+  color: var(--muted);
 }
 
 .btn.is-submitting {

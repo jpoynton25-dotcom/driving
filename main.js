@@ -34,6 +34,48 @@ const initContactValues = () => {
   }
 };
 
+const initFooterTrust = () => {
+  const footer = document.querySelector('.site-footer');
+  if (!footer) return;
+
+  const quickLinksHeading = [...footer.querySelectorAll('h3')].find(
+    (heading) => heading.textContent.trim().toLowerCase() === 'quick links'
+  );
+  const quickLinksList = quickLinksHeading?.nextElementSibling;
+
+  if (quickLinksList && quickLinksList.tagName === 'UL') {
+    const ensureLink = (href, text) => {
+      const exists = [...quickLinksList.querySelectorAll('a')].some(
+        (anchor) => anchor.getAttribute('href') === href
+      );
+      if (exists) return;
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = href;
+      a.textContent = text;
+      li.appendChild(a);
+      quickLinksList.appendChild(li);
+    };
+    ensureLink('privacy-policy.html', 'Privacy policy');
+    ensureLink('terms-and-conditions.html', 'Terms and conditions');
+  }
+
+  const contactHeading = [...footer.querySelectorAll('h3')].find(
+    (heading) => heading.textContent.trim().toLowerCase() === 'contact'
+  );
+  const contactList = contactHeading?.nextElementSibling;
+  if (contactList && contactList.tagName === 'UL') {
+    const hasResponseLine = [...contactList.querySelectorAll('li')].some((li) =>
+      /response/i.test(li.textContent)
+    );
+    if (!hasResponseLine) {
+      const li = document.createElement('li');
+      li.textContent = 'Typical response: within 1 working day';
+      contactList.appendChild(li);
+    }
+  }
+};
+
 const initHeader = () => {
   const siteHeader = document.querySelector('.site-header');
   if (!siteHeader) return;
@@ -288,6 +330,20 @@ const initForms = () => {
         submitButton.parentNode.insertBefore(feedback, submitButton);
       } else {
         form.appendChild(feedback);
+      }
+    }
+
+    if (!form.querySelector('[data-form-legal-note]')) {
+      const legal = document.createElement('p');
+      legal.className = 'form-legal-note';
+      legal.setAttribute('data-form-legal-note', '');
+      legal.innerHTML =
+        'By submitting, you agree to our <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms-and-conditions.html">Terms and Conditions</a>.';
+      const submitButton = form.querySelector('button[type="submit"]');
+      if (submitButton?.parentNode) {
+        submitButton.parentNode.insertBefore(legal, submitButton);
+      } else {
+        form.appendChild(legal);
       }
     }
 
@@ -865,6 +921,7 @@ const initDownloadProofToast = () => {
 
 initAnalytics();
 initContactValues();
+initFooterTrust();
 initHeader();
 initGlobalTrustProof();
 initReveal();
