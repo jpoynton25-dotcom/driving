@@ -75,6 +75,8 @@ function normalizePayload(params) {
   const clean = (value) => String(value || '').trim();
 
   const formType = clean(params.form_type);
+  const inferredHelpWith = inferHelpWith_(params, clean);
+  const inferredMessage = inferMessage_(params, clean);
 
   return {
     form_type: formType,
@@ -86,8 +88,8 @@ function normalizePayload(params) {
     mobile_number: clean(params.mobile_number || params.phone || params.mobile),
     postcode: clean(params.postcode),
     transmission: clean(params.transmission),
-    help_with: clean(params.help_with || params.interest),
-    message: clean(params.message),
+    help_with: inferredHelpWith,
+    message: inferredMessage,
     website: clean(params.website || params._honey),
     next_url: clean(params.next_url)
   };
@@ -102,16 +104,51 @@ function validatePayload(data) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(data.email)) return 'Invalid email format.';
 
-  if (data.form_type === 'support_request') {
-    if (!data.postcode) return 'Postcode is required.';
-    if (!data.transmission) return 'Transmission is required.';
-  }
-
   if (!['free_pdf', 'support_request', 'waitlist_request'].includes(data.form_type)) {
     return 'Invalid form_type.';
   }
 
   return '';
+}
+
+function inferHelpWith_(params, clean) {
+  const candidates = [
+    params.help_with,
+    params.interest,
+    params.lesson_type,
+    params.challenge,
+    params.focus,
+    params.theory_passed,
+    params.experience_level,
+    params.target_timescale,
+    params.pack
+  ]
+    .map(clean)
+    .filter(Boolean);
+
+  return candidates.join(' | ');
+}
+
+function inferMessage_(params, clean) {
+  const baseMessage = clean(params.message);
+
+  const extras = [];
+  const appendExtra = (label, value) => {
+    const safeValue = clean(value);
+    if (safeValue) extras.push(`${label}: ${safeValue}`);
+  };
+
+  appendExtra('Lesson type', params.lesson_type);
+  appendExtra('Challenge', params.challenge);
+  appendExtra('Focus', params.focus);
+  appendExtra('Theory passed', params.theory_passed);
+  appendExtra('Experience level', params.experience_level);
+  appendExtra('Target timescale', params.target_timescale);
+  appendExtra('Pack', params.pack);
+
+  if (!extras.length) return baseMessage;
+  if (!baseMessage) return extras.join(' | ');
+  return `${baseMessage} | ${extras.join(' | ')}`;
 }
 
 function getOrCreateSheet_() {
