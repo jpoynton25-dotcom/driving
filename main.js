@@ -269,6 +269,50 @@ const initCheckoutLinks = () => {
   }
 };
 
+const initButtonFormRouting = () => {
+  const formAnchorByPage = {
+    'index.html': 'contact',
+    'contact.html': 'get-my-plan',
+    'free-resources.html': 'resource-plan',
+    'driving-lessons.html': 'lesson-enquiry',
+    'intensive-courses.html': 'intensive-enquiry',
+    'theory-test.html': 'free-support',
+    'hazard-perception.html': 'free-guide',
+    'mock-theory-test.html': 'mock-plan',
+    'checkout.html': 'waitlist-form'
+  };
+
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+
+  document.querySelectorAll('a.btn[href]').forEach((link) => {
+    const rawHref = (link.getAttribute('href') || '').trim();
+    if (!rawHref || rawHref.startsWith('#')) return;
+    if (rawHref.startsWith('mailto:') || rawHref.startsWith('tel:') || rawHref.startsWith('javascript:')) return;
+
+    let targetUrl;
+    try {
+      targetUrl = new URL(rawHref, window.location.href);
+    } catch {
+      return;
+    }
+
+    if (targetUrl.origin !== window.location.origin) return;
+    if (targetUrl.hash) return;
+
+    const pageName = targetUrl.pathname.split('/').pop() || 'index.html';
+    const targetAnchor = formAnchorByPage[pageName];
+    if (!targetAnchor) return;
+
+    if (pageName === currentPage && !targetUrl.search) {
+      link.setAttribute('href', `#${targetAnchor}`);
+      return;
+    }
+
+    const normalizedPath = targetUrl.pathname.replace(/^\//, '') || 'index.html';
+    link.setAttribute('href', `${normalizedPath}${targetUrl.search}#${targetAnchor}`);
+  });
+};
+
 const initForms = () => {
   const configuredSiteUrl = String(PFUK_CONFIG.siteUrl || 'https://passfasteruk.co.uk').replace(/\/$/, '');
   const hostname = window.location.hostname;
@@ -930,6 +974,7 @@ initYear();
 initCheckoutPrefill();
 initContactPrefill();
 initCheckoutLinks();
+initButtonFormRouting();
 initForms();
 initCtaTracking();
 initPdfDownloadTracking();
