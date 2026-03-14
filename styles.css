@@ -609,6 +609,9 @@ section[id] {
 
 .main-driver-img {
   width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  object-position: center;
   border-radius: 26px;
   border: 1px solid rgb(182 199 222 / 0.58);
   box-shadow: 0 24px 52px rgb(15 23 42 / 0.16);
@@ -714,6 +717,7 @@ section[id] {
 }
 
 .panel-feature-image {
+  display: block;
   width: 100%;
   aspect-ratio: 16 / 10;
   border-radius: 16px;
