@@ -227,7 +227,7 @@ const initCheckoutPrefill = () => {
 };
 
 const initContactPrefill = () => {
-  if (!/\/?contact\.html$/i.test(window.location.pathname)) return;
+  if (!/^\/contact(?:\.html)?\/?$/i.test(window.location.pathname)) return;
 
   const params = new URLSearchParams(window.location.search);
   const helpWith = String(params.get('help_with') || '').trim();
@@ -271,18 +271,24 @@ const initCheckoutLinks = () => {
 
 const initButtonFormRouting = () => {
   const formAnchorByPage = {
-    'index.html': 'contact',
-    'contact.html': 'get-my-plan',
-    'free-resources.html': 'resource-plan',
-    'driving-lessons.html': 'lesson-enquiry',
-    'intensive-courses.html': 'intensive-enquiry',
-    'theory-test.html': 'free-support',
-    'hazard-perception.html': 'free-guide',
-    'mock-theory-test.html': 'mock-plan',
-    'checkout.html': 'waitlist-form'
+    index: 'contact',
+    contact: 'get-my-plan',
+    'free-resources': 'resource-plan',
+    'driving-lessons': 'lesson-enquiry',
+    'intensive-courses': 'intensive-enquiry',
+    'theory-test': 'free-support',
+    'hazard-perception': 'free-guide',
+    'mock-theory-test': 'mock-plan',
+    checkout: 'waitlist-form'
   };
 
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  const normalizePageName = (pathname) => {
+    const trimmed = String(pathname || '').replace(/^\/+|\/+$/g, '');
+    if (!trimmed) return 'index';
+    return trimmed.replace(/\.html$/i, '');
+  };
+
+  const currentPage = normalizePageName(window.location.pathname);
 
   document.querySelectorAll('a.btn[href]').forEach((link) => {
     const rawHref = (link.getAttribute('href') || '').trim();
@@ -299,7 +305,7 @@ const initButtonFormRouting = () => {
     if (targetUrl.origin !== window.location.origin) return;
     if (targetUrl.hash) return;
 
-    const pageName = targetUrl.pathname.split('/').pop() || 'index.html';
+    const pageName = normalizePageName(targetUrl.pathname);
     const targetAnchor = formAnchorByPage[pageName];
     if (!targetAnchor) return;
 
@@ -308,8 +314,8 @@ const initButtonFormRouting = () => {
       return;
     }
 
-    const normalizedPath = targetUrl.pathname.replace(/^\//, '') || 'index.html';
-    link.setAttribute('href', `${normalizedPath}${targetUrl.search}#${targetAnchor}`);
+    const targetPath = pageName === 'index' ? '/' : `/${pageName}`;
+    link.setAttribute('href', `${targetPath}${targetUrl.search}#${targetAnchor}`);
   });
 };
 
@@ -454,7 +460,7 @@ const initForms = () => {
 
     const nextPath = form.dataset.next || '/thank-you.html';
     const subject = form.dataset.subject || `${document.title} enquiry`;
-    const sourcePage = form.dataset.sourcePage || window.location.pathname.replace(/^\//, '') || 'index.html';
+    const sourcePage = form.dataset.sourcePage || window.location.pathname.replace(/^\//, '') || 'index';
     const resourceType = form.dataset.resourceType || '';
 
     const pathStem = window.location.pathname
@@ -510,8 +516,8 @@ const initForms = () => {
           '',
           `Download your Free 7-Day Revision Plan + Learner Support PDF: ${downloadLink}`,
           '',
-          `Free Mock Theory Test: ${publicSiteUrl}/mock-theory-test.html`,
-          `Practical Test Support: ${publicSiteUrl}/practical-test.html`,
+          `Free Mock Theory Test: ${publicSiteUrl}/mock-theory-test`,
+          `Practical Test Support: ${publicSiteUrl}/practical-test`,
           '',
           'If the link does not open directly, copy and paste it into your browser.'
         ];
@@ -810,7 +816,7 @@ const initFreeGuidePopup = () => {
         <li>Helps reduce random revision</li>
       </ul>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="free-resources.html#resource-plan" data-popup-cta>Get Free Download</a>
+        <a class="btn btn-primary" href="/free-resources#resource-plan" data-popup-cta>Get Free Download</a>
         <button class="btn btn-secondary" type="button" data-popup-close>Not now</button>
       </div>
     </section>
@@ -911,7 +917,7 @@ const initDownloadProofToast = () => {
     <button class="download-proof-toast__close" type="button" aria-label="Close" data-toast-close>&times;</button>
     <p class="download-proof-toast__kicker">Recent learner activity</p>
     <p class="download-proof-toast__text" data-toast-text></p>
-    <a class="download-proof-toast__link" href="free-resources.html#resource-plan">Get free download</a>
+    <a class="download-proof-toast__link" href="/free-resources#resource-plan">Get free download</a>
   `;
   const toastText = toast.querySelector('[data-toast-text]');
 
